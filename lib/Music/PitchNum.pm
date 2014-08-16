@@ -302,7 +302,7 @@ L<http://www.dolmetsch.com/musictheory1.htm#helmholtz>
 =item *
 
 Young, R. W. (1939). "Terminology for Logarithmic Frequency Units". The Journal
-of the Acoustical Society of America 11 (1): 134–000.
+of the Acoustical Society of America 11 (1): 134-000.
 Bibcode:1939ASAJ...11..134Y. doi:10.1121/1.1916017.
 
 =item *
