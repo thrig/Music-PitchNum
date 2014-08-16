@@ -1,4 +1,4 @@
-Music::PitchNum - note name to pitch number utility roles
+Music::PitchNum - note name and pitch number utility roles
 
 To install this module, use CPAN, for example:
 
@@ -23,7 +23,7 @@ assuming that all went well.
 
 DEPENDENCIES
 
-Role::Tiny and such, plus some time spent studying the various forms by which
+Moo::Role and such, plus some time spent studying the various forms by which
 music theory notates notes.
 
 

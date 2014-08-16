@@ -14,7 +14,7 @@ sub merge_key_into {
 
 my %params = (
   NAME         => 'Music::PitchNum',
-  ABSTRACT     => 'note name to pitch number utility roles',
+  ABSTRACT     => 'note name and pitch number utility roles',
   AUTHOR       => 'Jeremy Mates <jmates@cpan.org>',
   VERSION_FROM => 'lib/Music/PitchNum.pm',
 
@@ -27,12 +27,15 @@ my %params = (
   },
   BUILD_REQUIRES => {},
   TEST_REQUIRES  => {
-    'Test::More' => 0,
-    'lib'        => 0,
+    'Moo::Role'       => 0,
+    'Test::Exception' => 0,
+    'Test::More'      => 0,
+    'lib'             => 0,
   },
   PREREQ_PM => {
-    'Role::Tiny' => 0,
-    'strict'     => 0,
+    'Moo::Role'    => 0,
+    'Scalar::Util' => 0,
+    'strict'       => 0,
   },
 
   META_MERGE => {
