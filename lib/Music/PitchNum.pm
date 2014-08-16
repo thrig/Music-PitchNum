@@ -15,7 +15,7 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # for pitchnum (TODO make these attributes or otherwise f(x) calls?)
 my %NOTE2NUM = (
@@ -183,10 +183,11 @@ for example code.
 
 =head1 DESCRIPTION
 
-  "One need but glance at the various notations for a single tone
-  ... to be convinced that there is a sorrowful lack of agreement
-  in usage."
-    -- R. W. Young. "Terminology for Logarithmic Frequency Units"
+=over 4
+
+"One need but glance at the various notations for a single tone to be convinced that there is a sorrowful lack of agreement in usage." -- R. W. Young. "Terminology for Logarithmic Frequency Units"
+
+=back
 
 This module provides utility music pitch name and number routines; that is, an
 easy way to obtain pitch numbers from various pitch name formats (Helmholtz, or
