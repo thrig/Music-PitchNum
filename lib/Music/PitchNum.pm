@@ -185,7 +185,9 @@ for example code.
 
 =over 4
 
-"One need but glance at the various notations for a single tone to be convinced that there is a sorrowful lack of agreement in usage." -- R. W. Young. "Terminology for Logarithmic Frequency Units"
+"One need but glance at the various notations for a single tone to be convinced
+that there is a sorrowful lack of agreement in usage." -- R. W. Young.
+"Terminology for Logarithmic Frequency Units"
 
 =back
 
