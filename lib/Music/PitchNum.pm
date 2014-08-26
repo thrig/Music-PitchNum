@@ -15,7 +15,7 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # for pitchnum (TODO make these attributes or otherwise f(x) calls?)
 my %NOTE2NUM = (
@@ -177,6 +177,22 @@ Then elsewhere:
 
   $x->pitchname(69);    # A4
   $x->pitchnum('A4');   # 69
+
+Or, to dynamically select what module is used at object construction
+time, consider:
+
+  package MyCleverModule;
+  use Moo;
+
+  sub BUILD {
+    my ( $self, $param ) = @_;
+    with( exists $param->{pitchstyle} ? $param->{pitchstyle} : 'Music::PitchNum' );
+  }
+
+  package main;
+
+  my $x = MyCleverModule->new( pitchstyle => 'Music::PitchNum::ABC' );
+  print $x->pitchname(69);
 
 See also the C<eg/> and C<t/> directories of the distribution of this module
 for example code.
