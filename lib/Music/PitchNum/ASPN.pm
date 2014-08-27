@@ -10,7 +10,7 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.05';
+our $VERSION = '0.50';
 
 # for pitchnum (TODO make these attributes or otherwise f(x) calls?)
 my %NOTE2NUM = (
@@ -58,9 +58,9 @@ sub pitchnum {
 
   # Only sharps, as the Young article only has those. Use the main module for
   # looser pitch name matching.
-  if ( $name =~ m/ (?<note>[A-Ga-g]) (?<chrome>[#])? (?<octave>-?[0-9]{1,2}) /x )
+  if ( $name =~ m/ (?<note>[A-G]) (?<chrome>[#])? (?<octave>-?[0-9]{1,2}) /x )
   {
-    $pitchnum = 12 * ( $+{octave} + 1 ) + $NOTE2NUM{ uc $+{note} };
+    $pitchnum = 12 * ( $+{octave} + 1 ) + $NOTE2NUM{ $+{note} };
     $pitchnum++ if defined $+{chrome};
   }
 
@@ -115,8 +115,13 @@ passed something that is not a number.
 =item B<pitchnum> I<pitchname>
 
 Returns the pitch number for the given ASPN note name, or C<undef> if the note
-could not be parsed. Only the note name C<A-G>, optional C<#> for sharp, and
-the octave number are parsed by this module; other forms will not match.
+could not be parsed. Only the note names C<A-G> (and not the lower case forms),
+optional C<#> for sharp, and the octave number are parsed by this module; other
+forms will (or should) not match.
+
+This method will ignore the optional C<$relative> argument that various
+other modules under this distribution support, as C4 relative to anything
+is still C4.
 
 =back
 

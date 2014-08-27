@@ -37,4 +37,7 @@ is( $the->pitchnum('A7'),  105 );
 
 is( $the->pitchnum('C#5'), 73 );
 
-plan tests => 9;
+# whoops, should *not* parse
+is( $the->pitchnum('Bb4'), undef );
+
+plan tests => 10;
