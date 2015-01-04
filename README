@@ -8,18 +8,14 @@ For the source code, see:
 
 https://github.com/thrig/Music-PitchNum
 
-which can be installed once git and cpanm are installed by e.g.
+This can be built and installed by running:
 
-  git clone https://github.com/thrig/Music-PitchNum
-  cd Music-PitchNum
-  cpanm .
+   perl Makefile.PL
+   make
+   make test
+   make install
 
-The documentation following installation can be found by running:
-
-  perldoc Music::PitchNum
-
-assuming that all went well.
-
+Run perldoc(1) on Music::PitchNum for more documentation.
 
 DEPENDENCIES
 
