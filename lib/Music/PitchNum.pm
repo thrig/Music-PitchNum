@@ -335,7 +335,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by Jeremy Mates
+Copyright (C) 2014,2015 by Jeremy Mates
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself, either Perl version 5.20 or, at your option, any

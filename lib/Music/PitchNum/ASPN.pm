@@ -2,6 +2,8 @@
 #
 # Pitch number roles using the American Standard Pitch Notation (ASPN) format,
 # or something probably close enough.
+#
+# Run perldoc(1) on this file for additional documentation.
 
 package Music::PitchNum::ASPN;
 
@@ -10,7 +12,7 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.50';
+our $VERSION = '0.05';
 
 # for pitchnum (TODO make these attributes or otherwise f(x) calls?)
 my %NOTE2NUM = (
@@ -119,10 +121,6 @@ could not be parsed. Only the note names C<A-G> (and not the lower case forms),
 optional C<#> for sharp, and the octave number are parsed by this module; other
 forms will (or should) not match.
 
-This method will ignore the optional C<$relative> argument that various
-other modules under this distribution support, as C4 relative to anything
-is still C4.
-
 =back
 
 =head1 BUGS
@@ -159,7 +157,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by Jeremy Mates
+Copyright (C) 2014,2015 by Jeremy Mates
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself, either Perl version 5.20 or, at your option, any

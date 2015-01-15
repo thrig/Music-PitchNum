@@ -3,6 +3,8 @@
 # Pitch numbers from the ABC notation for notes, in a distinct module as the
 # format is Case Sensitive, and the accidentals very different from those seen
 # in other notation formats.
+#
+# Run perldoc(1) on this file for additional documentation.
 
 package Music::PitchNum::ABC;
 
@@ -169,7 +171,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by Jeremy Mates
+Copyright (C) 2014,2015 by Jeremy Mates
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself, either Perl version 5.20 or, at your option, any

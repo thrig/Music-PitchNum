@@ -1,6 +1,8 @@
 # -*- Perl -*-
 #
 # For BACH.
+#
+# Run perldoc(1) on this file for additional documentation.
 
 package Music::PitchNum::German;
 
@@ -22,16 +24,17 @@ my %NOTE2NUM = (
   B => 10,
   H => 11,
 );
+# NOTE lilypond picky about "ees" and "aes" in deutsch mode
 my %NUM2NOTE = (
   0  => 'c',
   1  => 'des',
   2  => 'd',
-  3  => 'ees',
+  3  => 'es',
   4  => 'e',
   5  => 'f',
   6  => 'ges',
   7  => 'g',
-  8  => 'aes',
+  8  => 'as',
   9  => 'a',
   10 => 'b',
   11 => 'h',
@@ -163,7 +166,7 @@ None known for BACH.
 
 =head1 SEE ALSO
 
-L<Music::PitchNum>
+L<Music::PitchNum>, C<ly-fu> of L<App::MusicTools>
 
 =head2 REFERENCES
 
@@ -182,7 +185,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by Jeremy Mates
+Copyright (C) 2014,2015 by Jeremy Mates
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself, either Perl version 5.20 or, at your option, any
