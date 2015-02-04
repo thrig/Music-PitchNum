@@ -11,7 +11,7 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 # for pitchnum (TODO make these attributes or otherwise f(x) calls?)
 my %NOTE2NUM = (
@@ -187,8 +187,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 Copyright (C) 2014,2015 by Jeremy Mates
 
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself, either Perl version 5.20 or, at your option, any
-later version of Perl 5 you may have available.
+This module is free software; you can redistribute it and/or modify it
+under the Artistic License (2.0).
 
 =cut

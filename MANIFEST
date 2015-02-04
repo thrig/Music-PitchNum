@@ -1,8 +1,10 @@
 Changes
+LICENSE
 MANIFEST
 MANIFEST.SKIP
 Makefile.PL
 README
+SIGNATURE
 eg/word2notes
 lib/Music/PitchNum.pm
 lib/Music/PitchNum/ABC.pm
