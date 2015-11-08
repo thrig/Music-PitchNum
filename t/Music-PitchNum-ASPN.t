@@ -5,8 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More;    # plan is down at bottom
-use Test::Exception;
+use Test::Most;    # plan is down at bottom
 
 package Assay;
 use Moo;

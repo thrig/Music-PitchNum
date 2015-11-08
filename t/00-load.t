@@ -2,7 +2,7 @@
 use 5.010000;
 use strict;
 use warnings FATAL => 'all';
-use Test::More;
+use Test::Most;
 
 plan tests => 3;
 

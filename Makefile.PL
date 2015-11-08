@@ -28,8 +28,7 @@ my %params = (
   BUILD_REQUIRES => {},
   TEST_REQUIRES  => {
     'Moo::Role'       => 0,
-    'Test::Exception' => 0,
-    'Test::More'      => 0,
+    'Test::Most'      => 0,
     'lib'             => 0,
   },
   PREREQ_PM => {
