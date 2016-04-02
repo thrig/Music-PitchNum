@@ -1,10 +1,10 @@
 # -*- Perl -*-
 #
-# Musical note name and pitch number utility roles, mostly motivated by not
-# wanting to drag in my huge and crufty Music::LilyPondUtil module just to
-# figure out what pitch number fis'' is, and providing for such as a Role. Also
-# an excuse for me to learn more about Roles as part of a Moo rewrite of
-# various modules.
+# Musical note name and pitch number utility roles, mostly motivated by
+# not wanting to drag in my huge and crufty Music::LilyPondUtil module
+# just to figure out what pitch number fis'' is, and providing for such
+# as a Role. Also an excuse for me to learn more about Roles as part of
+# a Moo rewrite of various modules.
 #
 # Run perldoc(1) on this file for additional documentation.
 
@@ -15,32 +15,64 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
-# for pitchnum (TODO make these attributes or otherwise f(x) calls?)
-my %NOTE2NUM = (
-  C => 0,
-  D => 2,
-  E => 4,
-  F => 5,
-  G => 7,
-  A => 9,
-  B => 11,
+##############################################################################
+#
+# ATTRIBUTES
+#
+# TODO this code is (sometimes) duplicated in the other modules in this
+# distribution, might be nice to "extend" this one into the other roles
+# and override things as necessary, but it's not clear how or whether
+# that can be done in the Moo::Role docs.
+
+# These probably should be 'ro' but there could be cases where someone
+# wants to set their own note names, so...
+has NOTE2NUM => (
+  is      => 'rw',
+  default => sub {
+    { C => 0,
+      D => 2,
+      E => 4,
+      F => 5,
+      G => 7,
+      A => 9,
+      B => 11,
+    };
+  },
 );
-# ASPN-style note-fu for pitchname
-my %NUM2NOTE = (
-  0  => 'C',
-  1  => 'C#',
-  2  => 'D',
-  3  => 'D#',
-  4  => 'E',
-  5  => 'F',
-  6  => 'F#',
-  7  => 'G',
-  8  => 'G#',
-  9  => 'A',
-  10 => 'A#',
-  11 => 'B',
+
+has NUM2NOTE => (
+  is => 'rw',
+  # ASPN-style by default
+  default => sub {
+    { 0  => 'C',
+      1  => 'C#',
+      2  => 'D',
+      3  => 'D#',
+      4  => 'E',
+      5  => 'F',
+      6  => 'F#',
+      7  => 'G',
+      8  => 'G#',
+      9  => 'A',
+      10 => 'A#',
+      11 => 'B',
+    };
+  },
+);
+
+# Option to omit the octave info, for when you need just a plain "C#"
+# from pitchname and not "C#4" or worse "C#-1" if you're dealing with
+# integers in the 0..11 range.
+#
+# TODO this probably should be a "Bool" type
+has ignore_octave => (
+  is     => 'rw',
+  coerce => sub {
+    $_[0] ? 1 : 0;
+  },
+  default => 0,
 );
 
 ##############################################################################
@@ -51,7 +83,8 @@ sub pitchname {
   my ( $self, $number ) = @_;
   die "need a number for pitchname\n" if !looks_like_number $number;
 
-  return $NUM2NOTE{ $number % 12 } . ( floor( $number / 12 ) - 1 );
+  return $self->NUM2NOTE->{ $number % 12 }
+    . ( $self->ignore_octave ? '' : ( floor( $number / 12 ) - 1 ) );
 }
 
 sub pitchnum {
@@ -78,7 +111,7 @@ SIRLEXALOT: {
     if ( !defined $note
       and $name =~
       m/ \G (?: (?<note>[A-G])(?<multi>\k<note>{1,10}) | (?<note>[A-Ga-g])) /cgx ) {
-      $note = $NOTE2NUM{ uc $+{note} };
+      $note = $self->NOTE2NUM->{ uc $+{note} };
       # Optional "English multiple C notation" where C, is written CC (only for
       # upper case as need to sometimes match "f" as "flat" as an accidental).
       if ( defined $+{multi} and !defined $octave ) {
@@ -186,7 +219,8 @@ time, consider:
 
   sub BUILD {
     my ( $self, $param ) = @_;
-    with( exists $param->{pitchstyle} ? $param->{pitchstyle} : 'Music::PitchNum' );
+    with( exists $param->{pitchstyle} ?
+      $param->{pitchstyle} : 'Music::PitchNum' );
   }
 
   package main;
@@ -194,40 +228,48 @@ time, consider:
   my $x = MyCleverModule->new( pitchstyle => 'Music::PitchNum::ABC' );
   print $x->pitchname(69);
 
-See also the C<eg/> and C<t/> directories of the distribution of this module
-for example code.
+See also the C<eg/> and C<t/> directories of the distribution of this
+module for example code, or look on metacpan for modules that depend on
+this module.
 
 =head1 DESCRIPTION
 
 =over 4
 
-"One need but glance at the various notations for a single tone to be convinced
-that there is a sorrowful lack of agreement in usage." -- R. W. Young.
-"Terminology for Logarithmic Frequency Units"
+"One need but glance at the various notations for a single tone to be
+convinced that there is a sorrowful lack of agreement in usage."
+-- R. W. Young. "Terminology for Logarithmic Frequency Units"
 
 =back
 
-This module provides utility music pitch name and number routines; that is, an
-easy way to obtain pitch numbers from various pitch name formats (Helmholtz, or
-in particular what C<lilypond> uses, what L<MIDI::Simple> accepts, and the
-American Standard Pitch Notation (ASPN)). The resulting pitch numbers are
-integers (as used by the MIDI standard), though this module does not restrict
-the range of the pitch numbers as MIDI does (support for black hole pressure
-waves was a design goal).
+This module provides utility music pitch name and number routines; that
+is, an easy way to obtain pitch numbers from various pitch name formats
+(Helmholtz, or in particular what C<lilypond> uses, what L<MIDI::Simple>
+accepts, and the American Standard Pitch Notation (ASPN)). The resulting
+pitch numbers are integers (as used by the MIDI standard), though this
+module does not restrict the range of the pitch numbers as MIDI does
+(support for black hole pressure waves was a design goal).
 
-This module is somewhat catholic in what it accepts; alternatives are the
-variety of sub-modules that support only the named notation system; the
-L<Music::PitchNum::German> implementation, in particular, is Helmholtz-based,
-though with "H" representing B natural and "B" as B flat as is necessary for
-BACH motif support. Not supported by this particular module include the ABC
-notation, solfege note names, and various other International formats. There is
-also no microtonal support, and the traditional Western 12-tone chromatic scale
-is used as the basis for the resulting pitch numbers. Also, the parsing of the
-notes is limited to just the note name, octave indication, and accidental, and
-in no way supports rhythmic elements or the like.
+This module is somewhat catholic in what it accepts; alternatives are
+the variety of sub-modules that support only the named notation system;
+the L<Music::PitchNum::German> implementation, in particular, is Helmholtz-
+based, though with "H" representing B natural and "B" as B flat as is
+necessary for BACH motif support. Not supported by this particular
+module include the ABC notation, solfege note names, and various other
+International formats. There is also no microtonal support, and the
+traditional Western 12-tone chromatic scale is used as the basis for the
+resulting pitch numbers. Also, the parsing of the notes is limited to
+just the note name, octave indication, and accidental, and in no way
+supports rhythmic elements or the like.
 
 This module is expected to be used as a Role from some other module;
 L<Moo::Role> may be informative.
+
+=head1 ATTRIBUTES
+
+Just one, B<ignore_octave> which if true (false by default) will cause
+calls to B<pitchname> to omit the octave indication and return just a
+plain note.
 
 =head1 METHODS
 
@@ -235,8 +277,8 @@ L<Moo::Role> may be informative.
 
 =item B<pitchname> I<pitchnumber>
 
-Returns a pitch name for the pitch number provided in the ASPN format. Will
-C<die> if passed something that does not look like a number.
+Returns a pitch name for the pitch number provided in the ASPN format.
+Will C<die> if passed something that does not look like a number.
 
   ->pitchname(59);       # B3
   ->pitchname(60);       # C4
@@ -244,34 +286,35 @@ C<die> if passed something that does not look like a number.
 
 =item B<pitchnum> I<pitchname>
 
-Returns the pitch number for the given pitch, or C<undef> if nothing was parsed
-from the input. Anything that already looks like a number will be returned by
-way of a trip through the C<int> function.
+Returns the pitch number for the given pitch, or C<undef> if nothing was
+parsed from the input. Anything that already looks like a number will be
+returned by way of a trip through the C<int> function.
 
   ->pitchnum(q{D4b});    # 61
   ->pitchnum(q{Db4});    # 61
   ->pitchnum(q{cis'});   # 61
   ->pitchnum(q{bisis});  # 61
 
-The accidentals supported are quite varied, and may be doubled to produce the
-corresponding doubleflat or doublesharp. The allowed list includes the flats
-C<b>, C<es>, C<ess>, C<f>, or C<flat> or the sharps C<s>, C<is>, C<iss>,
-C<sharp>, C<#>, C<d>, or C<k>. These can be mixed with the note names A through
-G, and either the ASPN octave number (4 for middle C) or the Helmholtz-derived
-C<,> or C<'> indicators as used in C<lilypond>.
+The accidentals supported are quite varied, and may be doubled to
+produce the corresponding doubleflat or doublesharp. The allowed list
+includes the flats C<b>, C<es>, C<ess>, C<f>, or C<flat> or the sharps
+C<s>, C<is>, C<iss>, C<sharp>, C<#>, C<d>, or C<k>. These can be mixed
+with the note names A through G, and either the ASPN octave number (4
+for middle C) or the Helmholtz-derived C<,> or C<'> indicators as used
+in C<lilypond>.
 
-English multiple C notation is supported with upper case note names for the
-octaves below the C below middle C:
+English multiple C notation is supported with upper case note names for
+the octaves below the C below middle C:
 
   ->pitchnum('C');       # 48
   ->pitchnum('CC');      # 36
   ->pitchnum('CCC');     # 24
 
 In general, the first matching element wins, so if something silly like
-C<CCC''4> were specified, the English match happens first (as that occurs while
-matching the note name) and then the other octave indicators are ignored. Other
-implementations may desire a tighter match or to throw errors on such
-absurdities.
+C<CCC''4> were specified, the English match happens first (as that
+occurs while matching the note name) and then the other octave
+indicators are ignored. Other implementations may desire a tighter match
+or to throw errors on such absurdities.
 
 =back
 
@@ -289,20 +332,23 @@ L<https://github.com/thrig/Music-PitchNum>
 
 =head2 Known Issues
 
-Matching the fancy flat symbol (or the double-flat, or double-sharp) is not yet
-supported. Use C<##> or C<b> or C<bb> for those in the meantime, or the various
-other ASCII forms allowed. Doubtless other things besides.
+Matching the fancy flat symbol (or the double-flat, or double-sharp) is
+not yet supported. Use C<##> or C<b> or C<bb> for those in the
+meantime, or the various other ASCII forms allowed. Doubtless other
+things besides.
 
 =head1 SEE ALSO
 
-How the resulting pitch names or numbers are used is of no concern to this
-module, though see L<MIDI::Simple> or L<Music::Scala> or L<Music::LilyPondUtil>
-for means to convert the numbers into MIDI events, frequencies, or a form
-suitable to pass to lilypond.
+How the resulting pitch names or numbers are used is of no concern to
+this module, though see L<MIDI::Simple> or L<Music::Scala> or
+L<Music::LilyPondUtil> for means to convert the numbers into MIDI
+events, frequencies, or a form suitable to pass to lilypond.
 
-L<Moo> and L<Moo::Role> would be good reads for programmers using this module.
+L<Moo> and L<Moo::Role> would be good reads for programmers using
+this module.
 
-L<Music::PitchNum::ABC>, L<Music::PitchNum::German> 
+L<Music::PitchNum::ABC>, L<Music::PitchNum::ASPN>,
+L<Music::PitchNum::Dutch>, L<Music::PitchNum::German>
 
 =head2 REFERENCES
 
@@ -335,7 +381,7 @@ thrig - Jeremy Mates (cpan:JMATES) C<< <jmates at cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014,2015 by Jeremy Mates
+Copyright (C) 2014-2016 by Jeremy Mates
 
 This module is free software; you can redistribute it and/or modify it
 under the Artistic License (2.0).

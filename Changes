@@ -1,6 +1,10 @@
-0.05 Fix ::German to behave with lilypond.
-0.04 Module dedicated to ASPN.
-0.03 eg/ script as promised in the docs.
-0.02 Foist on world.
+ * 0.08 - Even more fix ::German to behave like lilypond, add ::Dutch
+   (lilypond, only not quite so German), ignore_octave attribute in the
+   event just want the unencumbered note name. Probably some other
+   things, too.
+ * 0.05 - Fix ::German to behave with lilypond.
+ * 0.04 - Module dedicated to ASPN.
+ * 0.03 - eg/ script as promised in the docs.
+ * 0.02 - Foist on world.
 
 Otherwise, see the git repository.

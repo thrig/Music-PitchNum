@@ -102,4 +102,13 @@ is( $the->pitchnum(q{XCXkX4X}), 61 );
 is( $the->pitchnum(48),   48 );
 is( $the->pitchnum(12.3), 12 );
 
-plan tests => 48;
+##############################################################################
+#
+# sorry, octave
+
+$the->ignore_octave(1);
+
+is( $the->pitchname(0),  'C' );
+is( $the->pitchname(-7), 'F' );
+
+plan tests => 50;

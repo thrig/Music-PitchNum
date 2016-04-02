@@ -39,4 +39,13 @@ is( $the->pitchnum('C#5'), 73 );
 # whoops, should *not* parse
 is( $the->pitchnum('Bb4'), undef );
 
-plan tests => 10;
+##############################################################################
+#
+# sorry, octave
+
+$the->ignore_octave(1);
+
+is( $the->pitchname(-3),  'A' );
+is( $the->pitchname(69),  'A' );
+
+plan tests => 12;

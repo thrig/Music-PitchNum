@@ -49,4 +49,16 @@ is( $the->pitchnum('^^c'), 74 );
 is( $the->pitchnum('_d'),  73 );
 is( $the->pitchnum('__d'), 72 );
 
-plan tests => 21;
+##############################################################################
+#
+# sorry, octave
+
+$the->ignore_octave(1);
+
+# ABC unlike the others changes the note depending on the octave, though
+# for not-octave I'm going with upper case because that's what ASPN uses
+# by default.
+is( $the->pitchname(-3),  'A' );
+is( $the->pitchname(81),  'A' );
+
+plan tests => 23;

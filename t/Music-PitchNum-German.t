@@ -56,4 +56,26 @@ is( $the->pitchnum(q{cisis''}), 74 );
 is( $the->pitchnum(q{des''}),   73 );
 is( $the->pitchnum(q{deses''}), 72 );
 
-plan tests => 23;
+# and more accidentals
+is( $the->pitchnum(q{as'}),  68 );
+is( $the->pitchnum(q{es''}), 75 );
+
+# and yet more accidentals
+is( $the->pitchnum(q{ases'}),  67 );
+is( $the->pitchnum(q{eses''}), 74 );
+
+# TODO really should not be matching this sort of thing, gets parsed
+# as c -> 48
+#is( $the->pitchnum(q{cs'}),    undef );
+
+##############################################################################
+#
+# sorry, octave
+
+$the->ignore_octave(1);
+
+is( $the->pitchname(46), q{b} );
+is( $the->pitchname(58), q{b} );
+is( $the->pitchname(70), q{b} );
+
+plan tests => 30;

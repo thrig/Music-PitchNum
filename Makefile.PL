@@ -39,7 +39,7 @@ my %params = (
 
   META_MERGE => {
     'meta-spec' => { version => 2 },
-    'resources' => {
+    'homepageresources' => {
       repository => {
         url  => 'git://github.com/thrig/Music-PitchNum.git',
         web  => 'https://github.com/thrig/Music-PitchNum',

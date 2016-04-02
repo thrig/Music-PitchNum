@@ -1,12 +1,12 @@
 # -*- Perl -*-
 #
-# For BACH, or, compatibility with the lilypond "\language deutsch"
-# format. See Dutch.pm of this distribution for the default lilypond
-# format (nederlands).
+# Pitch name conversion compatible with Lilypond default or "\language
+# nederlands" (the default!) is set. See instead German.pm of this
+# distribution if you instead need "\language deutsch" support.
 #
 # Run perldoc(1) on this file for additional documentation.
 
-package Music::PitchNum::German;
+package Music::PitchNum::Dutch;
 
 use 5.010000;
 use Moo::Role;
@@ -28,27 +28,26 @@ has NOTE2NUM => (
       F => 5,
       G => 7,
       A => 9,
-      B => 10,
-      H => 11,
+      B => 11,
     };
   },
 );
-# NOTE lilypond picky about "ees" and "aes" in deutsch mode
+
 has NUM2NOTE => (
   is      => 'rw',
   default => sub {
     { 0  => 'c',
       1  => 'des',
       2  => 'd',
-      3  => 'es',
+      3  => 'ees',
       4  => 'e',
       5  => 'f',
       6  => 'ges',
       7  => 'g',
-      8  => 'as',
+      8  => 'aes',
       9  => 'a',
-      10 => 'b',
-      11 => 'h',
+      10 => 'bes',
+      11 => 'b',
     };
   },
 );
@@ -94,7 +93,7 @@ sub pitchnum {
   # octave indication only follows accidental, accidental only after note
   # plus complication for "as", "ases", "es", "eses" special cases
   if (
-    $name =~ m/ (?<note> [A-Ha-h] )
+    $name =~ m/ (?<note> [A-Ga-g] )
        (?<chrome> es(?:es)? | is(?:is)? | (?<=[AEae]) s(?:es)? )?
        (?<octave> [,]{1,10}|[']{1,10} )?
        /x
@@ -130,24 +129,24 @@ __END__
 
 =head1 NAME
 
-Music::PitchNum::German - note name and pitch number roles for BACH
+Music::PitchNum::Dutch - note name and pitch number roles for lilypond
 
 =head1 SYNOPSIS
 
-  package MyCleverMozart;
+  package MyCleverOckeghem;
   use Moo;
-  with('Music::PitchNum::German');
+  with('Music::PitchNum::Dutch');
   ...
 
 Then elsewhere:
 
-  use MyCleverMozart;
-  my $x = MyCleverMozart->new;
+  use MyCleverOckeghem;
+  my $x = MyCleverOckeghem->new;
 
-  $x->pitchname(70);      # b'
-  $x->pitchname(69);      # a'
   $x->pitchname(72);      # c''
-  $x->pitchname(71);      # h'
+  $x->pitchname(71);      # b'
+  $x->pitchname(70);      # bes'
+  $x->pitchname(69);      # a'
 
   $x->pitchnum(q{aes'});  # 68
   $x->pitchnum(q{g'});    # 67
@@ -156,15 +155,12 @@ Then elsewhere:
 
   $x->ignore_octaves(1);
   $x->pitchname(72);      # c
-  $x->pitchname(71);      # h
+  $x->pitchname(71);      # b
 
 =head1 DESCRIPTION
 
-A L<Music::PitchNum> implementation specifically for BACH, whereby C<H>
-represents what other systems term B natural and C<B> represents B flat.
-Otherwise, the implementation is Helmholtz-based, or the one typically
-seen in C<lilypond>, with accidentals in the Dutch or German style
-(C<es>, C<is>), and octave indications using C<,> and C<'>.
+A L<Music::PitchNum> implementation for the default lilypond note name
+syntax ("nederlands").
 
 This module is expected to be used as a Role from some other module;
 L<Moo::Role> may be informative.
