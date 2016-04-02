@@ -15,64 +15,35 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
-##############################################################################
-#
-# ATTRIBUTES
-#
-# TODO this code is (sometimes) duplicated in the other modules in this
-# distribution, might be nice to "extend" this one into the other roles
-# and override things as necessary, but it's not clear how or whether
-# that can be done in the Moo::Role docs.
-
-# These probably should be 'ro' but there could be cases where someone
-# wants to set their own note names, so...
-has NOTE2NUM => (
-  is      => 'rw',
-  default => sub {
-    { C => 0,
-      D => 2,
-      E => 4,
-      F => 5,
-      G => 7,
-      A => 9,
-      B => 11,
-    };
-  },
+# These (or an ignore_octave attribute) did not fly as attributes, as
+# then Music::Canon and other modules started barfing with "Constructor
+# for Music::Canon has been inlined and cannot be updated" from an
+# completely undocumented Method::Generate::Constructor module.
+my %NOTE2NUM = (
+  C => 0,
+  D => 2,
+  E => 4,
+  F => 5,
+  G => 7,
+  A => 9,
+  B => 11,
 );
 
-has NUM2NOTE => (
-  is => 'rw',
-  # ASPN-style by default
-  default => sub {
-    { 0  => 'C',
-      1  => 'C#',
-      2  => 'D',
-      3  => 'D#',
-      4  => 'E',
-      5  => 'F',
-      6  => 'F#',
-      7  => 'G',
-      8  => 'G#',
-      9  => 'A',
-      10 => 'A#',
-      11 => 'B',
-    };
-  },
-);
-
-# Option to omit the octave info, for when you need just a plain "C#"
-# from pitchname and not "C#4" or worse "C#-1" if you're dealing with
-# integers in the 0..11 range.
-#
-# TODO this probably should be a "Bool" type
-has ignore_octave => (
-  is     => 'rw',
-  coerce => sub {
-    $_[0] ? 1 : 0;
-  },
-  default => 0,
+my %NUM2NOTE = (
+  0  => 'C',
+  1  => 'C#',
+  2  => 'D',
+  3  => 'D#',
+  4  => 'E',
+  5  => 'F',
+  6  => 'F#',
+  7  => 'G',
+  8  => 'G#',
+  9  => 'A',
+  10 => 'A#',
+  11 => 'B',
 );
 
 ##############################################################################
@@ -80,11 +51,13 @@ has ignore_octave => (
 # METHODS
 
 sub pitchname {
-  my ( $self, $number ) = @_;
+  my ( $self, $number, %params ) = @_;
   die "need a number for pitchname\n" if !looks_like_number $number;
 
-  return $self->NUM2NOTE->{ $number % 12 }
-    . ( $self->ignore_octave ? '' : ( floor( $number / 12 ) - 1 ) );
+  $params{ignore_octave} //= 0;
+
+  return $NUM2NOTE{ $number % 12 }
+    . ( $params{ignore_octave} ? '' : ( floor( $number / 12 ) - 1 ) );
 }
 
 sub pitchnum {
@@ -111,7 +84,7 @@ SIRLEXALOT: {
     if ( !defined $note
       and $name =~
       m/ \G (?: (?<note>[A-G])(?<multi>\k<note>{1,10}) | (?<note>[A-Ga-g])) /cgx ) {
-      $note = $self->NOTE2NUM->{ uc $+{note} };
+      $note = $NOTE2NUM{ uc $+{note} };
       # Optional "English multiple C notation" where C, is written CC (only for
       # upper case as need to sometimes match "f" as "flat" as an accidental).
       if ( defined $+{multi} and !defined $octave ) {
@@ -211,6 +184,8 @@ Then elsewhere:
   $x->pitchname(69);    # A4
   $x->pitchnum('A4');   # 69
 
+  $x->pitchname(69, ignore_octave => 1);    # A
+
 Or, to dynamically select what module is used at object construction
 time, consider:
 
@@ -265,12 +240,6 @@ supports rhythmic elements or the like.
 This module is expected to be used as a Role from some other module;
 L<Moo::Role> may be informative.
 
-=head1 ATTRIBUTES
-
-Just one, B<ignore_octave> which if true (false by default) will cause
-calls to B<pitchname> to omit the octave indication and return just a
-plain note.
-
 =head1 METHODS
 
 =over 4
@@ -283,6 +252,11 @@ Will C<die> if passed something that does not look like a number.
   ->pitchname(59);       # B3
   ->pitchname(60);       # C4
   ->pitchname(61);       # C#4
+
+This method accepts an optional I<ignore_octave> parameter that if true
+will strip the octave information from the pitch name.
+
+  ->pitchname(59, ignore_octave => 1); # B
 
 =item B<pitchnum> I<pitchname>
 

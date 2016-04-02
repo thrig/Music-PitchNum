@@ -1,3 +1,6 @@
+ * 0.09 - Revert to not-has/methods due to inlining errors in
+   dependant modules, ignore_octave now an optional parameter to the
+   pitchname method.
  * 0.08 - Even more fix ::German to behave like lilypond, add ::Dutch
    (lilypond, only not quite so German), ignore_octave attribute in the
    event just want the unencumbered note name. Probably some other

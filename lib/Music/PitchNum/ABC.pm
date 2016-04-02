@@ -13,53 +13,33 @@ use Moo::Role;
 use POSIX qw/floor/;
 use Scalar::Util qw/looks_like_number/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
-##############################################################################
-#
-# ATTRIBUTES
-
-has NOTE2NUM => (
-  is      => 'rw',
-  default => sub {
-    { C => 0,
-      D => 2,
-      E => 4,
-      F => 5,
-      G => 7,
-      A => 9,
-      B => 11,
-    };
-  },
+my %NOTE2NUM = (
+  C => 0,
+  D => 2,
+  E => 4,
+  F => 5,
+  G => 7,
+  A => 9,
+  B => 11,
 );
 
 # ABC is like ASPN only for some N+1 reason it uses a different
 # accidental form, sigh
-has NUM2NOTE => (
-  is      => 'rw',
-  default => sub {
-    { 0  => 'C',
-      1  => '^C',
-      2  => 'D',
-      3  => '^D',
-      4  => 'E',
-      5  => 'F',
-      6  => '^F',
-      7  => 'G',
-      8  => '^G',
-      9  => 'A',
-      10 => '^A',
-      11 => 'B',
-    };
-  },
-);
-
-has ignore_octave => (
-  is     => 'rw',
-  coerce => sub {
-    $_[0] ? 1 : 0;
-  },
-  default => 0,
+my %NUM2NOTE = (
+  0  => 'C',
+  1  => '^C',
+  2  => 'D',
+  3  => '^D',
+  4  => 'E',
+  5  => 'F',
+  6  => '^F',
+  7  => 'G',
+  8  => '^G',
+  9  => 'A',
+  10 => '^A',
+  11 => 'B',
 );
 
 ##############################################################################
@@ -67,13 +47,15 @@ has ignore_octave => (
 # METHODS
 
 sub pitchname {
-  my ( $self, $number ) = @_;
+  my ( $self, $number, %params ) = @_;
   die "need a number for pitchname\n" if !looks_like_number $number;
 
-  my $octave = floor( $number / 12 ) - 1;
-  my $note   = $self->NUM2NOTE->{ $number % 12 };
+  $params{ignore_octave} //= 0;
 
-  if ( !$self->ignore_octave ) {
+  my $note = $NUM2NOTE{ $number % 12 };
+
+  if ( !$params{ignore_octave} ) {
+    my $octave = floor( $number / 12 ) - 1;
     $note = lc $note if $octave > 4;
     $note .= (q{'}) x ( $octave - 5 ) if $octave > 5;
     $note .= (q{,}) x ( 4 - $octave ) if $octave < 4;
@@ -97,7 +79,7 @@ sub pitchnum {
     my $chrome = $+{chrome};
     my $note   = $+{note};
 
-    $pitchnum = $self->NOTE2NUM->{ uc $note } + 12 * ( $note =~ m/[A-G]/ ? 5 : 6 );
+    $pitchnum = $NOTE2NUM{ uc $note } + 12 * ( $note =~ m/[A-G]/ ? 5 : 6 );
 
     if ( defined $octave ) {
       $pitchnum += 12 * length($octave) * ( $octave =~ m/[,]/ ? -1 : 1 );
@@ -149,12 +131,6 @@ the other forms.
 This module is expected to be used as a Role from some other module;
 L<Moo::Role> may be informative.
 
-=head1 ATTRIBUTES
-
-Just one, B<ignore_octave> which if true (false by default) will cause
-calls to B<pitchname> to omit the octave indication and return just a
-plain note.
-
 =head1 METHODS
 
 =over 4
@@ -163,6 +139,9 @@ plain note.
 
 Returns the pitch name for the given integer, though will throw an
 exception if passed something that is not a number.
+
+This method accepts an optional I<ignore_octave> parameter that if true
+will strip the octave information from the pitch name.
 
 =item B<pitchnum> I<pitchname>
 

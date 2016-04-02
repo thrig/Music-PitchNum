@@ -69,10 +69,8 @@ is( $the->pitchnum(q{eses''}), 74 );
 #
 # sorry, octave
 
-$the->ignore_octave(1);
-
-is( $the->pitchname(46), q{bes} );
-is( $the->pitchname(58), q{bes} );
-is( $the->pitchname(70), q{bes} );
+is( $the->pitchname(46, ignore_octave => 1), q{bes} );
+is( $the->pitchname(58, ignore_octave => 1), q{bes} );
+is( $the->pitchname(70, ignore_octave => 1), q{bes} );
 
 plan tests => 30;

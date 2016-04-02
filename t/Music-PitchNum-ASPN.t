@@ -43,9 +43,7 @@ is( $the->pitchnum('Bb4'), undef );
 #
 # sorry, octave
 
-$the->ignore_octave(1);
-
-is( $the->pitchname(-3),  'A' );
-is( $the->pitchname(69),  'A' );
+is( $the->pitchname(-3, ignore_octave => 1),  'A' );
+is( $the->pitchname(69, ignore_octave => 1),  'A' );
 
 plan tests => 12;

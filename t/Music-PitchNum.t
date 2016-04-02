@@ -106,9 +106,7 @@ is( $the->pitchnum(12.3), 12 );
 #
 # sorry, octave
 
-$the->ignore_octave(1);
-
-is( $the->pitchname(0),  'C' );
-is( $the->pitchname(-7), 'F' );
+is( $the->pitchname(0, ignore_octave => 1),  'C' );
+is( $the->pitchname(-7, ignore_octave => 1), 'F' );
 
 plan tests => 50;
